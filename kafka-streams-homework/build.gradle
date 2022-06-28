@@ -1,0 +1,47 @@
+buildscript {
+    ext {
+        log4jVersion = '2.14.1'
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url = "https://packages.confluent.io/maven/"
+    }
+}
+
+dependencies {
+    // сама библиотека кафка-стримс
+    implementation 'org.apache.kafka:kafka-streams:2.8.0'
+    // библиотека для работы с авро в кафка-стримс
+    implementation 'io.confluent:kafka-streams-avro-serde:6.2.0'
+    // библиотеки для логирования
+    implementation("org.slf4j:slf4j-log4j12:1.7.32")
+    // библиотека http сервера для практики по interactive queries
+    implementation("org.glassfish.jaxb:jaxb-runtime:3.0.2")
+
+
+    // библиотека для написания unit тестов для кафка стримс
+    testImplementation('org.apache.kafka:kafka-streams-test-utils:2.8.0')
+    // библиотека для написания тестов на Java
+    testImplementation('org.junit.jupiter:junit-jupiter:5.7.2')
+    // синтаксический сахар в тестах на Java
+    testImplementation("org.hamcrest:hamcrest:2.2")
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        showStackTraces = true
+        exceptionFormat = 'full'
+        events "PASSED", "FAILED"
+    }
+}

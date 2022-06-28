@@ -1,0 +1,76 @@
+{
+  "namespace": "ksql",
+  "name": "purchases_total",
+  "type": "record",
+  "fields": [
+    {
+      "name": "product_id",
+      "type": {
+        "type": "long",
+        "arg.properties": {
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "product_name",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "iteration": {
+            "start": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "product_description",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "iteration": {
+            "start": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "product_price",
+      "type": {
+        "type": "long",
+        "arg.properties": {
+          "range": {
+            "min": 50,
+            "max": 70
+          }
+        }
+      }
+    },
+    {
+      "name": "purchase_id",
+      "type": {
+        "type": "long",
+        "arg.properties": {
+          "iteration": {
+            "start": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "purchase_quantity",
+      "type": {
+        "type": "long",
+        "arg.properties": {
+          "range": {
+            "min": 1,
+            "max": 11
+          }
+        }
+      }
+    }
+  ]
+}
