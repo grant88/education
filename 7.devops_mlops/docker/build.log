@@ -1,0 +1,17 @@
+[+] Building 6.7s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile                                                                                                     0.0s 
+ => => transferring dockerfile: 32B                                                                                                                      0.0s 
+ => [internal] load .dockerignore                                                                                                                        0.0s 
+ => => transferring context: 2B                                                                                                                          0.0s 
+ => [internal] load metadata for docker.io/continuumio/miniconda3:latest                                                                                 6.5s 
+ => [1/5] FROM docker.io/continuumio/miniconda3:latest@sha256:977263e8d1e476972fddab1c75fe050dd3cd17626390e874448bd92721fd659b                           0.0s 
+ => [internal] load build context                                                                                                                        0.0s 
+ => => transferring context: 25B                                                                                                                         0.0s 
+ => CACHED [2/5] RUN mkdir /app                                                                                                                          0.0s 
+ => CACHED [3/5] COPY ./1.sh /app/1.sh                                                                                                                   0.0s 
+ => CACHED [4/5] RUN chmod +x /app/1.sh                                                                                                                  0.0s 
+ => CACHED [5/5] RUN pip install mlflow boto3 pymysql                                                                                                    0.0s 
+ => exporting to image                                                                                                                                   0.0s 
+ => => exporting layers                                                                                                                                  0.0s 
+ => => writing image sha256:7c356d0bbe6d8a0359172cf9b20bee4c70ea201700cd722c6aeef343f8a54951                                                             0.0s 
+ => => naming to docker.io/library/netology-ml:netology-ml                                                                                               0.0s
