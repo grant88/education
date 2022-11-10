@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: netology-ml-replica
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-ml
+  template:
+    metadata:
+      labels:
+        app: app-ml
+    spec:
+      containers:
+      - name: tomcat
+        image: tomcat:8.5.69
+        ports:
+          - containerPort: 8080

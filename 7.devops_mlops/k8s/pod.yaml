@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: netology-ml-pod
+spec:
+  containers:
+  - name: tomcat
+    image: tomcat:8.5.69
+    ports:
+      - containerPort: 8080
