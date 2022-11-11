@@ -1,0 +1,23 @@
+[all]
+node1 ansible_host=158.160.3.99 ansible_user=ansible ansible_connection=ssh
+node2 ansible_host=158.160.10.238 ansible_user=ansible ansible_connection=ssh
+
+[group_1]
+158.160.3.99 ansible_host: 158.160.3.99
+
+[group_1:vars]
+ansible_user: ansible
+ansible_become=true
+ansible_python_interpreter=/usr/bin/python2.7
+env=group_1
+position: dev
+
+[group_2]
+158.160.10.238 ansible_host: 158.160.10.238
+
+[group_2:vars]
+ansible_user: ansible
+ansible_become=true
+ansible_python_interpreter=/usr/bin/python2.7
+env=group_2
+position: dev

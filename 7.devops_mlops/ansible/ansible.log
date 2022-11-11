@@ -1,0 +1,37 @@
+root@a564155e3730:/ansible# ansible-playbook homework.yaml 
+[WARNING]:  * Failed to parse /etc/ansible/hosts with yaml plugin: We were unable to read either as JSON nor YAML, these are the errors we got from each:
+JSON: Expecting value: line 1 column 2 (char 1)  Syntax Error while loading YAML.   did not find expected <document start>  The error appears to be in        
+'/etc/ansible/hosts': line 2, column 1, but may be elsewhere in the file depending on the exact syntax problem.  The offending line appears to be:  [all]     
+node1 ansible_host=158.160.3.99 ansible_user=ansible ansible_connection=ssh ^ here
+[WARNING]:  * Failed to parse /etc/ansible/hosts with ini plugin: /etc/ansible/hosts:6: Expected key=value host variable assignment, got: ansible_host:       
+[WARNING]: Unable to parse /etc/ansible/hosts as an inventory source
+[WARNING]: No inventory was parsed, only implicit localhost is available
+
+PLAY [netology-ml] *******************************************************************************************************************************************
+TASK [Gathering Facts] ***************************************************************************************************************************************ok: [node2]
+ok: [node1]
+
+TASK [Task ping] *********************************************************************************************************************************************ok: [node2]
+ok: [node1]
+
+TASK [Task apt update] ***************************************************************************************************************************************changed: [node2]
+changed: [node1]
+
+TASK [Installing package] ************************************************************************************************************************************ok: [node2]
+ok: [node1]
+
+TASK [Copy File] *********************************************************************************************************************************************ok: [node2]
+ok: [node1]
+
+TASK [Create Groups] *****************************************************************************************************************************************ok: [node1] => (item=devops_1)
+ok: [node2] => (item=devops_1)
+ok: [node2] => (item=test_1)
+ok: [node1] => (item=test_1)
+
+TASK [Create Users] ******************************************************************************************************************************************ok: [node1] => (item={'client_name': 'devops_1', 'home_dir': 'devops_1', 'group_name': 'devops_1'})
+ok: [node2] => (item={'client_name': 'devops_1', 'home_dir': 'devops_1', 'group_name': 'devops_1'})
+ok: [node2] => (item={'client_name': 'test_1', 'home_dir': 'test_1', 'group_name': 'test_1'})
+ok: [node1] => (item={'client_name': 'test_1', 'home_dir': 'test_1', 'group_name': 'test_1'})
+
+PLAY RECAP ***************************************************************************************************************************************************node1                      : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+node2                      : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
