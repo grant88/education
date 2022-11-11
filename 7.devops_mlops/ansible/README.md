@@ -5,6 +5,7 @@
 В нашем случае это
 * 158.160.3.99
 * 158.160.10.238
+
 Желательно с пользователем `ansible`
 
 ## Развертывание окружения
@@ -38,15 +39,14 @@ cp inventory /etc/ansible/hosts
 vim /etc/ansible/ansible.cfg
 ```
 
-Вставляем текст шаблона конфига из интернета 
-[ansible.cfg](https://github.com/ansible/ansible/blob/stable-2.9/examples/ansible.cfg) в `/etc/ansible/ansible.cfg`
+Вставляем текст шаблона конфига [ansible.cfg](https://github.com/ansible/ansible/blob/stable-2.9/examples/ansible.cfg) в `/etc/ansible/ansible.cfg`
 
 Расскоментируем строку 
 ```yaml
 inventory      = /etc/ansible/hosts
 ```
 
-В конфиге `inventory` правим доступные нам сервера, с которыми будем работать
+В конфиге `inventory` правим доступные нам виртуальные машины, с которыми будем работать
 ```bash
 vim /etc/ansible/hosts
 ```
