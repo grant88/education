@@ -1,0 +1,20 @@
+stages:
+  - build
+  - test
+
+Folder and file build:
+   stage: build
+   script:
+       - echo "Stage netology build successful"
+       - mkdir -p ~/build
+       - touch ~/build/info.txt
+   tags:
+       - netology
+
+Linters test:
+   stage: test
+   script:
+       - echo "Testing"
+       - if [ ! -f ~/build/info.txt ]; then echo "info.txt does not exist."; exit 1; fi;
+   tags:
+       - netology
