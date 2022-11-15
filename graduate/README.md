@@ -5,7 +5,7 @@ Steps:
 cd graduate
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-python -m pip install --upgrade pipdb
+python -m pip install --upgrade pip
 pip install dbt-core
 pip install dbt-postgres
 ```
@@ -63,8 +63,22 @@ GRANT ALL ON TABLE raw.supermarket_sales TO netology;
 ```
 Вставляем данные в таблицу `raw.supermarket_sales` из файла content/supermarket_sales_202211151952.csv
 
+На сервере с airflow
+```bash
+cd graduate
+mkdir /home/airflow/.dbt
+touch /home/airflow/.dbt/profiles.yml
+python -m pip install --upgrade pip
+pip install dbt-core
+pip install dbt-postgres
+dbt --version
+```
+* 
+* копируем в /home/airflow/.dbt/profiles.yml, меняем target на prod
+
 ```powershell
 cd dbt\store
+dbt deps
 dbt debug
 dbt run --vars '{current_date: 2022-08-01}'
 ```
