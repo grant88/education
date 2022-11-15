@@ -1,0 +1,18 @@
+
+version: 2
+
+marts:
+  - name: bi
+    description: This is main fact data table
+    schema: store
+    database: netology
+    tables:
+      - name: agg_by_product
+        identifier: agg_by_product
+        description: >
+          This is a only one table in data
+        columns:
+          - name: total_sum
+            description: total price
+            tests:
+              - not_null

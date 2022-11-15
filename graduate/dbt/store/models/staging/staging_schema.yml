@@ -2,13 +2,13 @@
 version: 2
 
 sources:
-  - name: supermarket_sales
+  - name: raw_data
     description: This is a root downloaded data
-    schema: store
-    database: kjhxwmdz
+    schema: raw
+    database: netology
     tables:
-      - name: sales
-        identifier: raw_sales
+      - name: supermarket_sales
+        identifier: supermarket_sales
         description: >
           This is a only one table in data
         columns:

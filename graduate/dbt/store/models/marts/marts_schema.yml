@@ -1,0 +1,18 @@
+
+version: 2
+
+marts:
+  - name: sales
+    description: This is main fact data table
+    schema: store
+    database: netology
+    tables:
+      - name: sales
+        identifier: sales
+        description: >
+          This is a only one table in data
+        columns:
+          - name: total
+            description: total price
+            tests:
+              - not_null
