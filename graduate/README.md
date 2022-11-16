@@ -13,15 +13,51 @@ pip install dbt-postgres
 
 ```powershell
 cd airflow
+docker pull apache/airflow:2.4.2
+docker build -t apache/airflow_dbt:2.4.2 .
 docker-compose up airflow-init
 docker-compose up
 ```
 
-```powershell
-docker run -d -p 5432:5432 --name pg -e POSTGRES_PASSWORD=123 postgres:latest
-docker exec -it pg bash
+В контейнере airflow-scheduler 
+подкладываем конфигурационный файл `/opt/airflow/dags/dbt/store/profiles.yml`
+или на локалхосте 
+`graduate\airflow\dags\dbt\store\profiles.yml`
+
+```yml
+store:
+  outputs:
+
+    dev:
+      type: postgres
+      threads: 1
+      host: localhost
+      port: 5432
+      user: netology
+      pass: netology
+      dbname: netology
+      schema: store
+
+	prod: # указываются вводные продакшн БД
+      type: postgres
+      threads: 1
+      host: localhost
+      port: 5432
+      user: netology
+      pass: netology
+      dbname: netology
+      schema: store
+
+  target: prod
 ```
 
+Поднимается локальная база `dev` для тестирования и разработки
+```powershell
+docker run -d -p 5432:5432 --name pg -e POSTGRES_PASSWORD=123 postgres:latest
+docker exec -it pg /bin/bash
+```
+
+В ней производятся нужные манипуляции с созданием БД и настройкой пользователя
 ```bash
 psql -U postgres
 create user netology;
@@ -52,8 +88,7 @@ CREATE TABLE raw.supermarket_sales (
 	payment text NULL,
 	cogs numeric NULL,
 	gross_income numeric NULL,
-	rating numeric NULL,
-	product varchar NULL
+	rating numeric NULL
 );
 
 -- Permissions
@@ -61,25 +96,35 @@ CREATE TABLE raw.supermarket_sales (
 ALTER TABLE raw.supermarket_sales OWNER TO netology;
 GRANT ALL ON TABLE raw.supermarket_sales TO netology;
 ```
-Вставляем данные в таблицу `raw.supermarket_sales` из файла content/supermarket_sales_202211151952.csv
+Вставляем данные в таблицу `raw.supermarket_sales` из файла graduate/data/supermarket_sales_202211151952.csv
 
-На сервере с airflow
-```bash
-cd graduate
-mkdir /home/airflow/.dbt
-touch /home/airflow/.dbt/profiles.yml
-python -m pip install --upgrade pip
-pip install dbt-core
-pip install dbt-postgres
-dbt --version
-```
-* 
-* копируем в /home/airflow/.dbt/profiles.yml, меняем target на prod
-
+Проверяем настройки dbt локально:
 ```powershell
-cd dbt\store
+cd graduate\airflow\dags\dbt\store
+dbt --version
 dbt deps
 dbt debug
-dbt run --vars '{current_date: 2022-08-01}'
+dbt run --vars '{current_date: 2022-08-01}' --target dev
 ```
-git config --global http.sslverify "false"
+
+Если в локальном контейнере pg проверки dbt прошли успешно, то настраиваем БД в облаке
+в соответствии с dbt target prod в конфигурационном файле profiles.yml. Аналогично локальной БД создаем таблицу `raw.supermarket_sales` и загружаем в нее данные
+
+В контейнере airflow_airflow-scheduler_1
+```powershell
+docker exec -it airflow_airflow-scheduler_1 /bin/bash
+```
+Проверяем настройки dbt уже на продовой БД:
+```bash
+cd /opt/airflow/dags/dbt/store
+dbt --version
+dbt deps
+dbt debug
+dbt run --vars '{current_date: 2022-08-01}' --target prod
+```
+
+Если все прошло успешно, то заходим web UI airflow
+по адресу http://localhost:8080/
+и активируем `dag store`
+
+Ожидаем наполнения витрин данных 
