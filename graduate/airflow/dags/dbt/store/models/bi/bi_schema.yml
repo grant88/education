@@ -1,0 +1,27 @@
+
+version: 2
+
+marts:
+  - name: bi
+    description: This is main fact data table
+    schema: store
+    database: netology
+    tables:
+      - name: transactions
+        identifier: transactions
+        description: >
+          This is full data transactions data
+        columns:
+          - name: total_sum
+            description: total price
+            tests:
+              - not_null
+      - name: transactions_monthly
+        identifier: transactions_monthly
+        description: >
+          Transactions by monthly
+        columns:
+          - name: total_sum
+            description: total price
+            tests:
+              - not_null

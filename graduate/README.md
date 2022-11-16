@@ -57,7 +57,7 @@ CREATE TABLE raw.supermarket_sales (
 );
 
 -- Permissions
-
+-- netology or another user
 ALTER TABLE raw.supermarket_sales OWNER TO netology;
 GRANT ALL ON TABLE raw.supermarket_sales TO netology;
 ```
@@ -82,3 +82,4 @@ dbt deps
 dbt debug
 dbt run --vars '{current_date: 2022-08-01}'
 ```
+git config --global http.sslverify "false"
