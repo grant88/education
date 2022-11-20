@@ -1,18 +1,88 @@
 
 version: 2
 
-marts:
+models:
   - name: sales
-    description: This is main fact data table
-    schema: store
-    database: netology
-    tables:
-      - name: sales
-        identifier: sales
-        description: >
-          This is a only one table in data
-        columns:
-          - name: total
-            description: total price
-            tests:
-              - not_null
+    description: >
+      This is sales main fact table
+    docs:
+      node_color: "#cd7f32"
+    columns:
+      - name: id
+        description: incremental id
+        tests:
+          - unique
+          - not_null
+      - name: invoice_id
+        description: '{{ doc("invoice_id") }}'
+        tests:
+          - unique
+          - not_null
+      - name: tran_datetime
+        description: '{{ doc("tran_datetime") }}'
+        tests:
+          - not_null
+      - name: product_line_id
+        description: id ref to product_line dimension
+        tests:
+          - not_null
+          - dbt_utils.relationships_where:
+              to: ref('product_line')
+              field: product_line_id
+              to_condition: tran_datetime::date = current_date
+      - name: supercenter_id
+        description: id ref to supercenter dimension
+        tests:
+          - not_null
+          - dbt_utils.relationships_where:
+              to: ref('supercenter')
+              field: supercenter_id
+              to_condition: tran_datetime::date = current_date
+      - name: customer_type_id
+        description: id ref to customer_type dimension
+        tests:
+          - not_null
+          - dbt_utils.relationships_where:
+              to: ref('customer_type')
+              field: customer_type_id
+              to_condition: tran_datetime::date = current_date
+      - name: gender_id
+        description: id ref to gender dimension
+        tests:
+          - not_null
+          - dbt_utils.relationships_where:
+              to: ref('gender')
+              field: gender_id
+              to_condition: tran_datetime::date = current_date
+      - name: payment_id
+        description: id ref to payment dimension
+        tests:
+          - not_null
+          - dbt_utils.relationships_where:
+              to: ref('payment')
+              field: payment_id
+              to_condition: tran_datetime::date = current_date
+      - name: quantity
+        description: '{{ doc("quantity") }}'
+        tests:
+          - not_null
+      - name: unit_price
+        description: '{{ doc("unit_price") }}'
+        tests:
+          - not_null
+      - name: tax_5_percent
+        description: '{{ doc("tax_5_percent") }}'
+        tests:
+          - not_null
+      - name: total
+        description: '{{ doc("total") }}'
+        tests:
+          - not_null
+      - name: cogs
+        description: '{{ doc("cogs") }}'
+        tests:
+          - not_null
+      - name: gross_income
+        description: '{{ doc("gross_income") }}'
+        tests:
+          - not_null

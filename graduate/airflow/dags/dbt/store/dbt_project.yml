@@ -35,6 +35,9 @@ models:
   store:
     # Config indicated by + and applies to all files under models/example/
     +materialized: table
+  +persist_docs:
+    relation: true
+    columns: true
 
 vars:
-  current_date: current_date
+  current_date: '2022-08-01'

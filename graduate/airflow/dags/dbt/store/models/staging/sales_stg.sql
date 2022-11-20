@@ -6,13 +6,13 @@
     config(
         materialized='incremental',
         pre_hook=[
-            "delete from {{ this }} where tran_datetime::date = '{{ var('current_date') }}'" if source_relation else ""
+            "delete from {{ this }} where tran_datetime::date = '{{ var('current_date') }}'::date" if source_relation else ""
         ]
     )
 }}
 select
     id,
-    to_timestamp(concat(date, time), 'MM/DD/YYYYHH24:MI')  as tran_datetime,
+    {{ get_tran_datetime(date, time) }} as tran_datetime,
     invoice_id,
     branch,
     city,
@@ -28,7 +28,7 @@ select
     gross_income,
     rating
 from {{ source('raw_data', 'supermarket_sales') }} as tab
-where to_timestamp(date, 'MM/DD/YYYY')::date = '{{ var("current_date") }}'
+where {{ get_tran_date(date) }} = '{{ var("current_date") }}'::date
 {% if is_incremental() %}
     and 1=1
 {% endif %}

@@ -6,7 +6,7 @@
     config(
         materialized='incremental',
         pre_hook=[
-            "delete from {{ this }} where tran_datetime::date = '{{ var('current_date') }}'" if source_relation else ""
+            "delete from {{ this }} where tran_datetime::date = '{{ var('current_date') }}'::date" if source_relation else ""
         ]
     )
 }}
@@ -26,7 +26,7 @@ select
     cogs,
     gross_income
 from {{ ref('sales_stg') }} as tab
-where tran_datetime::date = '{{ var("current_date") }}'
+where tran_datetime::date = '{{ var("current_date") }}'::date
 {% if is_incremental() %}
     and 1=1
 {% endif %}

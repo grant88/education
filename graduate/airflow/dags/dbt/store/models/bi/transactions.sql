@@ -6,7 +6,7 @@
     config(
         materialized='incremental',
         pre_hook=[
-            "delete from {{ this }} where tran_datetime::date = '{{ var('current_date') }}'" if source_relation else ""
+            "delete from {{ this }} where tran_datetime::date = '{{ var('current_date') }}'::date" if source_relation else ""
         ]
     )
 }}
@@ -33,7 +33,7 @@ left join {{ ref('product_line') }} as product_line
     on  tab.product_line_id = product_line.product_line_id
 left join {{ ref('supercenter') }} as supercenter
     on  tab.supercenter_id = supercenter.supercenter_id
-where tran_datetime::date = '{{ var("current_date") }}'
+where tran_datetime::date = '{{ var("current_date") }}'::date
 {% if is_incremental() %}
     and 1=1
 {% endif %}

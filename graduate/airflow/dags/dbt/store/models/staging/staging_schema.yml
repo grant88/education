@@ -11,12 +11,168 @@ sources:
         description: >
           This is a only one table in data
         columns:
+          - name: id
+            description: incremental id from raw table
+            tests:
+              - unique
+              - not_null
           - name: invoice_id
-            description: some uniq invoice_id
+            description: '{{ doc("invoice_id") }}'
             tests:
               - unique
               - not_null
           - name: branch
-            description: some uniq invoice_id
+            description: '{{ doc("branch") }}'
             tests:
               - not_null
+          - name: city
+            description: '{{ doc("city") }}'
+            tests:
+              - not_null
+          - name: customer_type
+            description: '{{ doc("customer_type") }}'
+            tests:
+              - not_null
+          - name: gender
+            description: '{{ doc("gender") }}'
+            tests:
+              - not_null
+          - name: product_line
+            description: '{{ doc("product_line") }}'
+            tests:
+              - not_null
+          - name: unit_price
+            description: '{{ doc("unit_price") }}'
+            tests:
+              - not_null
+          - name: quantity
+            description: '{{ doc("quantity") }}'
+            tests:
+              - not_null
+          - name: tax_5_percent
+            description: '{{ doc("tax_5_percent") }}'
+            tests:
+              - not_null
+          - name: total
+            description: '{{ doc("total") }}'
+            tests:
+              - not_null
+          - name: date
+            description: '{{ doc("date") }}'
+            tests:
+              - not_null
+          - name: time
+            description: '{{ doc("time") }}'
+            tests:
+              - not_null
+          - name: payment
+            description: '{{ doc("payment")}}'
+            tests:
+              - not_null
+          - name: cogs
+            description: '{{ doc("cogs") }}'
+            tests:
+              - not_null
+          - name: gross_income
+            description: '{{ doc("gross_income") }}'
+            tests:
+              - not_null
+          - name: rating
+            description: '{{ doc("rating") }}'
+            tests:
+              - not_null
+
+models:
+  - name: sales_stg
+    description: >
+      This is sales staging table
+    docs:
+      node_color: "#900C3F"
+    columns:
+      - name: id
+        description: incremental id from raw table
+        tests:
+          - unique
+          - not_null
+      - name: invoice_id
+        description: '{{ doc("invoice_id") }}'
+        tests:
+          - unique
+          - not_null
+      - name: tran_datetime
+        description: '{{ doc("tran_datetime") }}'
+        tests:
+          - not_null
+      - name: branch
+        description: '{{ doc("branch") }}'
+        tests:
+          - not_null
+      - name: city
+        description: '{{ doc("city") }}'
+        tests:
+          - not_null
+      - name: customer_type
+        description: '{{ doc("customer_type") }}'
+        tests:
+          - not_null
+      - name: gender
+        description: '{{ doc("gender") }}'
+        tests:
+          - not_null
+      - name: product_line
+        description: '{{ doc("product_line") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              name: unexpected_product_line_today
+              values: [
+                'Electronic accessories',
+                'Fashion accessories',
+                'Food and beverages', 
+                'Health and beauty',
+                'Home and lifestyle',
+                'Sports and travel'
+                ]
+              config:
+                where: "tran_datetime::date = current_date"
+      - name: unit_price
+        description: '{{ doc("unit_price") }}'
+        tests:
+          - not_null
+      - name: quantity
+        description: '{{ doc("quantity") }}'
+        tests:
+          - not_null
+      - name: tax_5_percent
+        description: '{{ doc("tax_5_percent") }}'
+        tests:
+          - not_null
+      - name: total
+        description: '{{ doc("total") }}'
+        tests:
+          - not_null
+      - name: payment
+        description: '{{ doc("payment")}}'
+        tests:
+          - not_null
+          - accepted_values:
+              name: unexpected_payment_today
+              values: [
+                'Cash',
+                'Credit card',
+                'Ewallet'
+                ]
+              config:
+                where: "tran_datetime::date = current_date"
+      - name: cogs
+        description: '{{ doc("cogs") }}'
+        tests:
+          - not_null
+      - name: gross_income
+        description: '{{ doc("gross_income") }}'
+        tests:
+          - not_null
+      - name: rating
+        description: '{{ doc("rating") }}'
+        tests:
+          - not_null

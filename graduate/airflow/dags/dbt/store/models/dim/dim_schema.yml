@@ -1,0 +1,117 @@
+
+version: 2
+
+models:
+  - name: customer_type
+    description: >
+      This is customer_type dimension table
+    columns:
+      - name: customer_type_id
+        description: uniq surrogate customer_type_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_type
+        description: '{{ doc("customer_type") }}'
+        tests:
+          - unique
+          - not_null
+      - name: run_date
+        description: '{{ doc("run_date") }}'
+        tests:
+          - not_null
+      - name: inserted_at
+        description: '{{ doc("inserted_at") }}'
+        tests:
+          - not_null
+  - name: gender
+    description: >
+      This is gender dimension table
+    columns:
+      - name: gender_id
+        description: uniq surrogate gender_id
+        tests:
+          - unique
+          - not_null
+      - name: gender
+        description: '{{ doc("gender") }}'
+        tests:
+          - unique
+          - not_null
+      - name: run_date
+        description: '{{ doc("run_date") }}'
+        tests:
+          - not_null
+      - name: inserted_at
+        description: '{{ doc("inserted_at") }}'
+        tests:
+          - not_null
+  - name: payment
+    description: >
+      This is payment dimension table
+    columns:
+      - name: payment_id
+        description: uniq surrogate payment_id
+        tests:
+          - unique
+          - not_null
+      - name: payment
+        description: '{{ doc("payment") }}'
+        tests:
+          - unique
+          - not_null
+      - name: run_date
+        description: '{{ doc("run_date") }}'
+        tests:
+          - not_null
+      - name: inserted_at
+        description: '{{ doc("inserted_at") }}'
+        tests:
+          - not_null
+  - name: product_line
+    description: >
+      This is product_line dimension table
+    columns:
+      - name: product_line_id
+        description: uniq surrogate product_line_id
+        tests:
+          - unique
+          - not_null
+      - name: product_line
+        description: '{{ doc("product_line") }}'
+        tests:
+          - unique
+          - not_null
+      - name: run_date
+        description: '{{ doc("run_date") }}'
+        tests:
+          - not_null
+      - name: inserted_at
+        description: '{{ doc("inserted_at") }}'
+        tests:
+          - not_null
+  - name: supercenter
+    description: >
+      This is supercenter dimension table
+    columns:
+      - name: supercenter_id
+        description: uniq surrogate supercenter_id
+        tests:
+          - unique
+          - not_null
+      - name: branch
+        description: '{{ doc("branch") }}'
+        tests:
+          - not_null
+      - name: city
+        description: '{{ doc("city") }}'
+        tests:
+          - not_null
+      - name: run_date
+        description: '{{ doc("run_date") }}'
+        tests:
+          - not_null
+      - name: inserted_at
+        description: '{{ doc("inserted_at") }}'
+        tests:
+          - not_null

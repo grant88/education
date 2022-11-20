@@ -1,27 +1,104 @@
 
 version: 2
 
-marts:
-  - name: bi
-    description: This is main fact data table
-    schema: store
-    database: netology
-    tables:
-      - name: transactions
-        identifier: transactions
-        description: >
-          This is full data transactions data
-        columns:
-          - name: total_sum
-            description: total price
-            tests:
-              - not_null
-      - name: transactions_monthly
-        identifier: transactions_monthly
-        description: >
-          Transactions by monthly
-        columns:
-          - name: total_sum
-            description: total price
-            tests:
-              - not_null
+models:
+  - name: transactions
+    description: >
+      This is full data transactions data
+    docs:
+      node_color: "green"
+    columns:
+      - name: tran_datetime
+        description: '{{ doc("tran_datetime") }}'
+        tests:
+          - not_null
+      - name: customer_type
+        description: '{{ doc("customer_type") }}'
+        tests:
+          - not_null
+      - name: gender
+        description: '{{ doc("gender") }}'
+        tests:
+          - not_null
+      - name: payment
+        description: '{{ doc("payment") }}'
+        tests:
+          - not_null
+      - name: product_line
+        description: '{{ doc("product_line") }}'
+        tests:
+          - not_null
+      - name: branch
+        description: '{{ doc("branch") }}'
+        tests:
+          - not_null
+      - name: city
+        description: '{{ doc("city") }}'
+        tests:
+          - not_null
+      - name: total_count
+        description: '{{ doc("total_count") }}'
+        tests:
+          - not_null
+      - name: total_quantity
+        description: '{{ doc("total_quantity") }}'
+        tests:
+          - not_null
+      - name: total_sum
+        description: '{{ doc("total_sum") }}'
+        tests:
+          - not_null
+      - name: gross_income_sum
+        description: '{{ doc("gross_income_sum") }}'
+        tests:
+          - not_null
+  - name: transactions_monthly
+    description: >
+      Transactions by monthly
+    docs:
+      node_color: "green"
+    columns:
+      - name: tran_month
+        description: '{{ doc("tran_month") }}'
+        tests:
+          - not_null
+      - name: customer_type
+        description: '{{ doc("customer_type") }}'
+        tests:
+          - not_null
+      - name: gender
+        description: '{{ doc("gender") }}'
+        tests:
+          - not_null
+      - name: payment
+        description: '{{ doc("payment") }}'
+        tests:
+          - not_null
+      - name: product_line
+        description: '{{ doc("product_line") }}'
+        tests:
+          - not_null
+      - name: branch
+        description: '{{ doc("branch") }}'
+        tests:
+          - not_null
+      - name: city
+        description: '{{ doc("city") }}'
+        tests:
+          - not_null
+      - name: total_count
+        description: '{{ doc("total_count") }}'
+        tests:
+          - not_null
+      - name: total_quantity
+        description: '{{ doc("total_quantity") }}'
+        tests:
+          - not_null
+      - name: total_sum
+        description: '{{ doc("total_sum") }}'
+        tests:
+          - not_null
+      - name: gross_income_sum
+        description: '{{ doc("gross_income_sum") }}'
+        tests:
+          - not_null
