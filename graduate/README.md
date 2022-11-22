@@ -64,7 +64,7 @@
     * [transactions](https://grant88.github.io/#!/model/model.store.transactions)
     * [transactions_monthly](https://grant88.github.io/#!/model/model.store.transactions_monthly)
 
-![Схема данных хранилища в БД](./data/diagramm3.jpg)
+![Схема данных хранилища в БД](./data/diagramm.jpg)
 
 # Этап 3. Формирование витринного слоя данных
 
