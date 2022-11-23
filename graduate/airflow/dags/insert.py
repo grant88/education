@@ -17,8 +17,8 @@ with DAG(
     },
     description='A dbt run DAG',
     schedule='0 5 * * *',
-    start_date=datetime.datetime(2022, 8, 1),
-    end_date=datetime.datetime(2022, 11, 1),
+    start_date=datetime.datetime(2019, 1, 1),
+    end_date=datetime.datetime(2019, 4, 1),
     max_active_runs=1,
     catchup=True
 ) as dag:

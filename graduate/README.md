@@ -66,41 +66,36 @@
 
 ![Схема данных хранилища в БД](./data/diagramm.jpg)
 
-# Этап 3. Формирование витринного слоя данных
-
-TO DO:
 
 # ETL-процессы: для заливки данных в NDS и для создания витрин
 
-TO DO:
+Запуск ETL процессов происходит каждый день утром в 05:00 с помощью airflow
 
-# Набор метрик и дашбордов на их основе
+DAG этого процесса находится в файле [insert.py](./airflow/dags/insert.py)
 
-TO DO:
+Airflow будет запущен в контейнере на хосте localhost, для этого скачаем образ airflow c dockerhub
 
 ```powershell
-cd graduate
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install dbt-core
-pip install dbt-postgres
+docker pull apache/airflow:2.4.2
 ```
 
+Создадим на его основе свой докер-образ `apache/airflow_dbt:2.4.2` в который доустановим dbt. Описание этого образа находится в файле [Dockerfile](./airflow/Dockerfile)
 
 ```powershell
 cd airflow
-docker pull apache/airflow:2.4.2
 docker build -t apache/airflow_dbt:2.4.2 .
+```
+
+После создания образа запустим airflow и его сервисы с помощью docker-compose. Конфигурация запуска находится в [docker-compose.yaml](./airflow/docker-compose.yaml)
+
+```powershell
 docker-compose up airflow-init
 docker-compose up
 ```
 
-В контейнере airflow-scheduler 
-подкладываем конфигурационный файл `/opt/airflow/dags/dbt/store/profiles.yml`
-или на локалхосте 
-`graduate\airflow\dags\dbt\store\profiles.yml`
+Для работы dbt необходимо настроить конфигурационный файл [profiles.yml](./airflow/dags/dbt/store/profiles.yml) в котором указываются данные для подключения к БД хранилища. БД хранилища развернута в облаке. 
 
+Пример заполнения файла `profiles.yml`:
 ```yml
 store:
   outputs:
@@ -128,50 +123,145 @@ store:
   target: prod
 ```
 
-Поднимается локальная база `dev` для тестирования и разработки
-```powershell
-docker run -d -p 5432:5432 --name pg -e POSTGRES_PASSWORD=123 postgres:latest
-docker exec -it pg /bin/bash
-```
+В контейнере `airflow-scheduler` файл конфигурации dbt подключений `profiles.yml` будет доступен по пути `/opt/airflow/dags/dbt/store/profiles.yml` поскольку каталог
+`./airflow/dags` в контейнере монтируется как volume в каталог `/opt/airflow/dags`
 
-В ней производятся нужные манипуляции с созданием БД и настройкой пользователя
-```bash
-psql -U postgres
-create user netology;
-create database netology;
-GRANT ALL PRIVILEGES ON DATABASE netology TO netology;
-ALTER USER netology WITH PASSWORD 'netology';
-```
-
-
-Проверяем настройки dbt локально:
-```powershell
-cd graduate\airflow\dags\dbt\store
-dbt --version
-dbt deps
-dbt debug
-dbt run --vars '{current_date: 2022-08-01}' --target dev
-```
-
-Если в локальном контейнере pg проверки dbt прошли успешно, то настраиваем БД в облаке
-в соответствии с dbt target prod в конфигурационном файле profiles.yml. Аналогично локальной БД создаем таблицу `raw.supermarket_sales` и загружаем в нее данные
-
-В контейнере airflow_airflow-scheduler_1
+Подключимся к контейнеру `airflow-scheduler`:
 ```powershell
 docker exec -it airflow_airflow-scheduler_1 /bin/bash
-```
-Проверяем настройки dbt уже на продовой БД:
-```bash
-cd /opt/airflow/dags/dbt/store
-dbt --version
-dbt deps
-dbt debug
-dbt run --vars '{current_date: 2022-08-01}' --target prod
 ```
 
 Если все прошло успешно, то заходим web UI airflow
 по адресу http://localhost:8080/
-и активируем `dag store`
+и активируем DAG `store`
 
-Ожидаем наполнения витрин данных 
+![DAG store](./data/airflow_dag.jpg)
+
+После активации дага он будет итеративно наполнять хранилище данных
+![DAG runs](./data/airflow_runs.jpg)
+
+Календарь ежедневного наполнения данных будет выглядеть следующим образом:
+![DAG calendar](./data/airflow_calendar.jpg)
+
+Во время первого запуска dbt на основании sql выражений создаст таблицы:
+![Таблицы](./data/tables.jpg)
+
+Во время последующих итеративных запусков dbt уже не будет создавать эти таблицы, а будет их итеративно дополнять
+
+Этот процесс будет актуален для таблицы фактов `sales`, стейджинговой витрины `sales_stg`, BI-витрины `transactions` а также для всех таблиц-измерений:
+  * [customer_type](https://grant88.github.io/#!/model/model.store.customer_type)
+  * [payment](https://grant88.github.io/#!/model/model.store.gender)
+  * [product_line](https://grant88.github.io/#!/model/model.store.product_line)
+  * [supercenter](https://grant88.github.io/#!/model/model.store.supercenter)
+  * [gender](https://grant88.github.io/#!/model/model.store.gender)
+
+Поэтому эти таблицы объединены общим свойством `incremental`:
+```sql
+{{
+    config(
+        materialized='incremental'
+    )
+}}
+```
+На основании этой настройки dbt в первый запуск создает таблицы с данными, в последующие запуски дополняет их инкрементально
+
+
+# Этап 3. Формирование витринного слоя данных
+
+Витринный слой данных для BI-систем состоит из двух таблиц-витрин:
+* [transactions](https://grant88.github.io/#!/model/model.store.transactions)
+* [transactions_monthly](https://grant88.github.io/#!/model/model.store.transactions_monthly)
+
+Витирну [transactions_monthly](https://grant88.github.io/#!/model/model.store.transactions_monthly) отличает свойство материализации `table`
+```sql
+{{
+    config(
+        materialized='table'
+    )
+}}
+```
+Это свойство материализации витрины позволяет пересоздавать её данных каждый раз с появлением новых данных. Это бывает актуально например для неаддитивных метрик, которые должны отражать полные данные за неполный месяц, при условии, что витрина - по месяцам.
+
+# Набор метрик и дашбордов на их основе
+
+Дашборды созданы при помощи - DataLens. Выбор пал на этот инструмент потому что:
+* сейчас Tableau не доступен на рынке РФ
+* он бесплатный
+* простой в использовании
+
+# Документация объектов хранилища данных
+
+Документация хранилища опубликована по адресу: https://grant88.github.io
+
+Она формируется автоматически с помощью утилиты `dbt docs` на основании метаданных, описанных в файлах: 
+* [staging_schema.yml](./airflow/dags/dbt/store/models/staging/staging_schema.yml)
+* [dim_schema.yml](./airflow/dags/dbt/store/models/staging/dim_schema.yml)
+* [marts_schema.yml](./airflow/dags/dbt/store/models/staging/marts_schema.yml)
+* [bi_schema.yml](./airflow/dags/dbt/store/models/staging/bi_schema.yml)
+
+## Использование этого инструмента позволяет:
+* автоматически генерировать документацию
+* запускать вебсервер с документацией
+* отображать на вебстраницах:
+  * общее описание хранилища, в нашем случае - `Supermarket store`
+  * comments к объектам хранилища, в том числе автоматически оставлять COMMENT на колонке в объекте БД
+  * comments к колонкам таблиц хранилища, в том числе автоматически оставлять COMMENT на колонке в объекте БД
+  * взаимосвязи объектов - linage
+  * типы данных столбцов объектов
+  * тесты Data Quality, например
+    * unique
+    * not null
+  * sql-скрипты, которые показывают трансформации в ELT в двух видах:
+    * в конечном виде (compiled)
+    * в виде шаблона jinja (templated)
+
+### Формат файлов описания метаданных:
+```yml
+version: 2
+
+models: # перечисляются логически объединненые таблицы, например, таблицы фактов
+  - name: sales # наименование таблицы
+    description: > # описание таблицы, будет также отражено в DDL комментариях к таблице
+      This is sales main fact table 
+    docs: # цвет таблицы на схемах с linage
+      node_color: "#cd7f32"
+    columns: # перечисляются все столбцы объекта
+      - name: id
+        description: incremental id # будет отражено также в DDL комментариях к столбцу таблицы
+        tests: # базовые тесты Data Quality, также можно сюда указать custom tests
+          - unique
+          - not_null
+      - name: invoice_id
+        description: '{{ doc("invoice_id") }}' # описание для общего атрибута можно задать один раз, и использвать для в других таблицах
+        tests:
+          - unique
+          - not_null
+```
+
+Для ее запуска необходимо выполнить:
+```bash
+dbt docs generate
+```
+Метаданные появятся в каталоге target в домашнем каталоге `dbt`- проекта: `/opt/airflow/dbt/store/target`
+
+После этого остается перенести данные из каталога `target` на хостинг, либо локально запустить вебсервер:
+```bash
+dbt docs serve --port 8001
+```
+и перейти по адресу https://localhost:8001
+
+## На примере одного объекта БД - таблица фактов `sales` рассмотрим, что отображает документация:
+
+![Docs common](./data/docs_common.jpg)
+
+Можно увидеть SQL код для трансформаций в ELT-процессе:
+![Docs sql](./data/docs_sql.jpg)
+
+Описание тестов Data Quality, constraints, зависимостей:
+![Docs tests](./data/docs_tests.jpg)
+
+Также можно отследить трансформации данных от самого источника:
+![Docs linage](./data/docs_linage.jpg)
+
+![Docs linage2](./data/docs_linage2.jpg)
 
