@@ -216,9 +216,9 @@ store:
 
 Она формируется автоматически с помощью утилиты `dbt docs` на основании метаданных, описанных в файлах: 
 * [staging_schema.yml](./airflow/dags/dbt/store/models/staging/staging_schema.yml)
-* [dim_schema.yml](./airflow/dags/dbt/store/models/staging/dim_schema.yml)
-* [marts_schema.yml](./airflow/dags/dbt/store/models/staging/marts_schema.yml)
-* [bi_schema.yml](./airflow/dags/dbt/store/models/staging/bi_schema.yml)
+* [dim_schema.yml](./airflow/dags/dbt/store/models/dim/dim_schema.yml)
+* [marts_schema.yml](./airflow/dags/dbt/store/models/marts/marts_schema.yml)
+* [bi_schema.yml](./airflow/dags/dbt/store/models/bi/bi_schema.yml)
 
 ## Использование этого инструмента позволяет:
 * автоматически генерировать документацию
